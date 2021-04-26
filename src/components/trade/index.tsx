@@ -25,7 +25,12 @@ import {
 } from "../../utils/pools";
 import { notify } from "../../utils/notifications";
 import { useCurrencyPairState } from "../../utils/currencyPair";
-import { generateActionLabel, POOL_NOT_AVAILABLE, SWAP_LABEL } from "../labels";
+import { 
+  generateActionLabel,
+  POOL_NOT_AVAILABLE,
+  SWAP_LABEL,
+  BEYOND_BID_RANGE_LABEL,
+  } from "../labels";
 import "./trade.less";
 import { colorWarning, convert, getTokenName } from "../../utils/utils";
 import { AdressesPopover } from "../pool/address";
@@ -34,6 +39,7 @@ import { useEnrichedPools } from "../../context/market";
 import { AppBar } from "../appBar";
 import { Settings } from "../settings";
 import { MigrationModal } from "../migration";
+import CONSTANT from '../../utils/constant';
 
 const { Text } = Typography;
 
@@ -45,6 +51,7 @@ export const TradeEntry = () => {
   const [pendingTx, setPendingTx] = useState(false);
   const [tier, setTier] = useState(0);
   const [maxBidRange, setMaxBidRange] = useState(0);
+  const [beyondMaxBidRange, setBeyondMaxBidRange] = useState(false);
   const {
     A,
     B,
@@ -81,15 +88,23 @@ export const TradeEntry = () => {
 
   useEffect(() => {
     if (tier === 1) {
-      setMaxBidRange(tokenBInPool * 0.4)
+      setMaxBidRange(tokenBInPool * CONSTANT.LEVEL4)
     } else if (tier === 2) {
-    setMaxBidRange(tokenBInPool * 0.3)
+    setMaxBidRange(tokenBInPool * CONSTANT.LEVEL3)
     } else if (tier === 3) {
-      setMaxBidRange(tokenBInPool * 0.2)
+      setMaxBidRange(tokenBInPool * CONSTANT.LEVEL2)
     } else {
-      setMaxBidRange(tokenBInPool * 0.1)
+      setMaxBidRange(tokenBInPool * CONSTANT.LEVEL1)
     } 
   }, [A, B, tier, tokenBInPool]);
+
+  useMemo(() => {
+    setBeyondMaxBidRange(
+      parseFloat(B.amount) > maxBidRange
+       ? true
+       : false 
+      );
+  }, [A.amount, B.amount, maxBidRange])
 
 
   const swapAccounts = () => {
@@ -196,7 +211,8 @@ export const TradeEntry = () => {
             !B.mintAddress ||
             A.account === B.account ||
             !A.sufficientBalance() ||
-            !pool)
+            !pool ||
+            beyondMaxBidRange)
         }
       >
         {generateActionLabel(
@@ -205,6 +221,9 @@ export const TradeEntry = () => {
                 getTokenName(tokenMap, A.mintAddress),
                 getTokenName(tokenMap, B.mintAddress)
               )
+            : 
+          beyondMaxBidRange
+            ? BEYOND_BID_RANGE_LABEL + " - " + maxBidRange.toFixed(6)
             : SWAP_LABEL,
           connected,
           tokenMap,

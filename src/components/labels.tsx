@@ -9,6 +9,7 @@ export const POOL_NOT_AVAILABLE = (tokenA: string, tokenB: string) =>
   `Pool ${tokenA}/${tokenB} doesn't exsist`;
 export const ADD_LIQUIDITY_LABEL = "Provide Liquidity";
 export const SWAP_LABEL = "Swap";
+export const BEYOND_BID_RANGE_LABEL = "Bid range go over limit";
 export const CONNECT_LABEL = "Connect Wallet";
 export const SELECT_TOKEN_LABEL = "Select a token";
 export const ENTER_AMOUNT_LABEL = "Enter an amount";
