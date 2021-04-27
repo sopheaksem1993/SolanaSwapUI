@@ -10,6 +10,7 @@ import {TierProvider} from './utils/tier';
 import { MarketProvider } from "./context/market";
 import { PoolOverview } from "./components/pool/view";
 import { ExchangeView } from "./components/exchange";
+import { ProjectView } from "./components/project";
 
 export function Routes() {
   return (
@@ -28,6 +29,11 @@ export function Routes() {
                       exact
                       path="/pool"
                       component={() => <PoolOverview />}
+                    />
+                    <Route 
+                      exact
+                      path="/project"
+                      component={() => <ProjectView/>}
                     />
                   </TierProvider>
                 </CurrencyPairProvider>

@@ -28,7 +28,7 @@ import {
   BEYOND_BID_RANGE_LABEL,
   } from "../labels";
 import "./trade.less";
-import { colorWarning, convert, getTokenName } from "../../utils/utils";
+import { colorWarning, getTokenName } from "../../utils/utils";
 import { AdressesPopover } from "../pool/address";
 import { PoolInfo } from "../../models";
 import { useEnrichedPools } from "../../context/market";
@@ -75,7 +75,7 @@ export const TradeEntry = () => {
     } else {
       setMaxBidRange(tokenBInPool * CONSTANT.LEVEL1)
     } 
-  }, [A, B, tokenBInPool]);
+  }, [A, B, tier, tokenBInPool]);
 
   useMemo(() => {
     setBeyondMaxBidRange(
@@ -83,7 +83,7 @@ export const TradeEntry = () => {
        ? true
        : false 
       );
-  }, [A.amount, B.amount, maxBidRange]);
+  }, [B.amount, maxBidRange]);
 
   const swapAccounts = () => {
     const tempMint = A.mintAddress;

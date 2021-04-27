@@ -701,8 +701,7 @@ export const useOwnedPools = (legacy = false) => {
     const map = userAccounts.reduce((acc, item) => {
       const key = item.info.mint.toBase58();
       acc.set(key, [...(acc.get(key) || []), item]);
-      return acc;
-    }, new Map<string, TokenAccount[]>());
+      return acc;    }, new Map<string, TokenAccount[]>());
 
     return pools
       .filter((p) => map.has(p.pubkeys.mint.toBase58()) && p.legacy === legacy)

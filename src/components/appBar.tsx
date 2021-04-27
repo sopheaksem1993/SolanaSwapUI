@@ -42,6 +42,15 @@ export const AppBar = (props: { left?: JSX.Element; right?: JSX.Element }) => {
               Charts
             </Link>
           </Menu.Item>
+          <Menu.Item key="Project">
+            <Link
+              to={{
+                pathname: "/project",
+              }}
+            >
+              Projects
+            </Link>
+          </Menu.Item>
           <Menu.Item key="trade">
             <a
               href={"https://dex.projectserum.com"}
