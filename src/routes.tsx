@@ -6,6 +6,7 @@ import { WalletProvider } from "./context/wallet";
 import { ConnectionProvider } from "./utils/connection";
 import { AccountsProvider } from "./utils/accounts";
 import { CurrencyPairProvider } from "./utils/currencyPair";
+import {TierProvider} from './utils/tier';
 import { MarketProvider } from "./context/market";
 import { PoolOverview } from "./components/pool/view";
 import { ExchangeView } from "./components/exchange";
@@ -19,14 +20,16 @@ export function Routes() {
             <AccountsProvider>
               <MarketProvider>
                 <CurrencyPairProvider>
-                  <Route exact path="/" component={ExchangeView} />
-                  <Route exact path="/add" component={ExchangeView} />
-                  <Route exact path="/info" component={() => <ChartsView />} />
-                  <Route
-                    exact
-                    path="/pool"
-                    component={() => <PoolOverview />}
-                  />
+                  <TierProvider>
+                    <Route exact path="/" component={ExchangeView} />
+                    <Route exact path="/add" component={ExchangeView} />
+                    <Route exact path="/info" component={() => <ChartsView />} />
+                    <Route
+                      exact
+                      path="/pool"
+                      component={() => <PoolOverview />}
+                    />
+                  </TierProvider>
                 </CurrencyPairProvider>
               </MarketProvider>
             </AccountsProvider>

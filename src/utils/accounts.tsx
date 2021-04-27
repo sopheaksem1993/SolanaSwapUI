@@ -679,7 +679,7 @@ export const useSelectedAccount = (account: string) => {
   return;
 };
 
-export const useAccountByMint = (mint: string) => {
+export const useAccountByMint = (mint: string | undefined) => {
   const { userAccounts } = useUserAccounts();
   const index = userAccounts.findIndex(
     (acc) => acc.info.mint.toBase58() === mint

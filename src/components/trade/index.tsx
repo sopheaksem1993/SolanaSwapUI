@@ -1,10 +1,6 @@
 import { Button, Card, Popover, Spin, Typography } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  useAccountByMint,
-  cache,
-} from "../../utils/accounts";
-import {
   useConnection,
   useConnectionConfig,
   useSlippageConfig,
@@ -40,6 +36,7 @@ import { AppBar } from "../appBar";
 import { Settings } from "../settings";
 import { MigrationModal } from "../migration";
 import CONSTANT from '../../utils/constant';
+import {useTiers} from '../../utils/tier';
 
 const { Text } = Typography;
 
@@ -49,7 +46,6 @@ export const TradeEntry = () => {
   const { wallet, connect, connected } = useWallet();
   const connection = useConnection();
   const [pendingTx, setPendingTx] = useState(false);
-  const [tier, setTier] = useState(0);
   const [maxBidRange, setMaxBidRange] = useState(0);
   const [beyondMaxBidRange, setBeyondMaxBidRange] = useState(false);
   const {
@@ -61,30 +57,13 @@ export const TradeEntry = () => {
   const pool = usePoolForBasket([A?.mintAddress, B?.mintAddress]);
   const { slippage } = useSlippageConfig();
   const { tokenMap } = useConnectionConfig();
+  const {tier} = useTiers();
   const pools = useMemo(() => (pool ? [pool] : []), [pool]);
   const enriched = useEnrichedPools(pools);
-  const tokenAMint = cache.getMint(A.mintAddress);
-  const tokenAAccount = useAccountByMint(A.mintAddress);
-  let balanceA: number = 0;
   let tokenBInPool: number = 0;
   if (enriched.length) {
    tokenBInPool = enriched[0].liquidityA;
   }
-
-  if (tokenAAccount && tokenAMint) {
-    balanceA = convert(tokenAAccount, tokenAMint);
-  }
-  useEffect(() => {
-    if (balanceA < 0.11) {
-      setTier(4);
-    } else if (balanceA < 0.2) {
-      setTier(3);
-    } else if (balanceA < 0.23) {
-      setTier(2);
-    } else {
-      setTier(1);
-    }
-  }, [A, balanceA]);
 
   useEffect(() => {
     if (tier === 1) {
@@ -96,7 +75,7 @@ export const TradeEntry = () => {
     } else {
       setMaxBidRange(tokenBInPool * CONSTANT.LEVEL1)
     } 
-  }, [A, B, tier, tokenBInPool]);
+  }, [A, B, tokenBInPool]);
 
   useMemo(() => {
     setBeyondMaxBidRange(
@@ -104,8 +83,7 @@ export const TradeEntry = () => {
        ? true
        : false 
       );
-  }, [A.amount, B.amount, maxBidRange])
-
+  }, [A.amount, B.amount, maxBidRange]);
 
   const swapAccounts = () => {
     const tempMint = A.mintAddress;
